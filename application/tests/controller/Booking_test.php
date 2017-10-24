@@ -2,6 +2,8 @@
 class Booking_test extends TestCase{
     public function setUp(){
         $this->resetInstance();
+        $this->CI->load->model('m_booking');
+        $this->objek=$this->CI->m_booking;
     }
 
     function test_viewBooking(){
@@ -13,65 +15,60 @@ class Booking_test extends TestCase{
         $output = $this->request('GET', 'booking/berhasilbook');
         $this->assertContains('<h1>Booking Sukses</h1>', $output);
     }
-        
+
     function test_createBooking_sukses(){
         $_SESSION['name'] = "palupisekarh@gmail.com";
+        $totalrow= $this->objek->getTotalRow('Honda Beat 2012', 'Susah distater', '2017-09-15');
         $this->request('POST', 'booking/createBooking',
             [
-                'name' => $_SESSION['name'],
                 'jenisKendaraan' => 'Honda Beat 2012',
                 'keluhan' => 'Susah distater',
                 'tanggalBook' => '2017-09-15'
             ]);
-        $this->assertRedirect('booking/berhasilbook');
+        $totalrowafter= $this->objek->getTotalRow('Honda Beat 2012', 'Susah distater', '2017-09-15');
+        $this->assertEquals($totalrowafter,$totalrow+1);
         $this->request('GET', 'booking/deleteLastBooking');
     }
-    //session null(belum masuk)
-    function test_createBooking_gagal(){
-        $_SESSION['name'] = "";
-        $this->request('POST', 'booking/createBooking',
-            [
-                'name' => $_SESSION['name'],
-                'jenisKendaraan' => 'Honda Beat 2012',
-                'keluhan' => 'Susah distater',
-                'tanggalBook' => '2017-09-15'
-            ]);
-        $this->assertRedirect('welcome');
-    }
     //jenis kendaraan tidak diisi
-    function test_createBooking_gagal2(){
+    function test_createBooking_gagal(){
         $_SESSION['name'] = "palupisekarh@gmail.com";
+        $totalrow= $this->objek->getTotalRow(NULL, 'Susah distater', '2017-09-15');
         $this->request('POST', 'booking/createBooking',
             [
-                'name' => $_SESSION['name'],
                 'jenisKendaraan' => NULL,
                 'keluhan' => 'Susah distater',
                 'tanggalBook' => '2017-09-15'
             ]);
+        $totalrowafter= $this->objek->getTotalRow(NULL, 'Susah distater', '2017-09-15');
+        $this->assertEquals($totalrowafter,$totalrow);
         $this->assertRedirect('welcome');
     }
-    //keluhan tidak diisi
-    function test_createBooking_gagal3(){
+    //jenis keluhan null
+    function test_createBooking_gagal2(){
         $_SESSION['name'] = "palupisekarh@gmail.com";
+        $totalrow= $this->objek->getTotalRow('Honda Beat 2012', NULL, '2017-09-15');
         $this->request('POST', 'booking/createBooking',
             [
-                'name' => $_SESSION['name'],
-                'jenisKendaraan' => 'Honda Beat',
-                'keluhan' => NULL,
+                'jenisKendaraan' => 'Honda Beat 2012',
+                'keluhan' =>  NULL,
                 'tanggalBook' => '2017-09-15'
             ]);
+        $totalrowafter= $this->objek->getTotalRow('Honda Beat 2012',  NULL, '2017-09-15');
+        $this->assertEquals($totalrowafter,$totalrow);
         $this->assertRedirect('welcome');
     }
     //tanggal tidak diisi
-    function test_createBooking_gagal4(){
+    function test_createBooking_gagal3(){
         $_SESSION['name'] = "palupisekarh@gmail.com";
+        $totalrow= $this->objek->getTotalRow('Honda Beat 2012', 'Susah distater', NULL);
         $this->request('POST', 'booking/createBooking',
             [
-                'name' => $_SESSION['name'],
-                'jenisKendaraan' => 'Honda Beat',
+                'jenisKendaraan' => 'Honda Beat 2012',
                 'keluhan' => 'Susah distater',
                 'tanggalBook' => NULL
             ]);
+        $totalrowafter= $this->objek->getTotalRow('Honda Beat 2012',  'Susah distater', NULL);
+        $this->assertEquals($totalrowafter,$totalrow);
         $this->assertRedirect('welcome');
     }
 }

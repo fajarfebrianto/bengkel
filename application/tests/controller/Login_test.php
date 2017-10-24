@@ -10,7 +10,7 @@ class Login_test extends TestCase{
         $this->request('POST', 'login/aksi_login',
             [
                 'username' => 'palupisekarh@gmail.com',
-                'password' => '123123',
+                'password' => '123123123',
             ]);
         $this->assertRedirect(base_url());
         $this->assertEquals('palupisekarh@gmail.com', $_SESSION['name']);

@@ -8,9 +8,22 @@ class M_booking extends CI_Model {
   function deleteBooking($dataBooking){
     $this->db->delete('booking', $dataBooking);
   }
+ 
+  public function getTotalRow($jenisKendaraan, $keluhan, $tanggalBook){
+    $this->db->where('jenisKendaraan', $jenisKendaraan);
+    $this->db->where('keluhan', $keluhan);
+    $this->db->where('tanggalBook', $tanggalBook);
+    $this->db->from('booking');
+    $query= $this->db->get();
+    return $query->num_rows();
+  }
   
   function getLastRow(){
-    $query = $this->db->query("SELECT * FROM booking ORDER BY idBooking DESC LIMIT 1");
+    $this->db->select('*');
+    $this->db->from('booking');
+    $this->db->order_by('idBooking', 'DESC');
+    $this->db->limit('1');
+    $query = $this->db->get();
     $result = $query->result_array();
     return $result;
   }

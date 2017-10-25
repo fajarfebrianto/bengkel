@@ -43,7 +43,7 @@ class Login_test extends TestCase{
         $this->assertFalse( isset($_SESSION['name']) );
         $this->request('POST', 'login/aksi_login',
             [
-                'username' => 'palupisekarhapsari@gmail.com',
+                'username' => 'palupisekarh@gmail.com',
                 'password' => '',
             ]);
         $this->assertFalse( isset($_SESSION['name']) );
@@ -54,7 +54,7 @@ class Login_test extends TestCase{
         $this->assertFalse( isset($_SESSION['name']) );
         $this->request('POST', 'login/aksi_login',
             [
-                'username' => 'palupisekarhapsari@gmail.com',
+                'username' => 'palupisekarh@gmail.com',
                 'password' => 'unmatch',
             ]);
         $this->assertFalse( isset($_SESSION['name']) );
@@ -62,8 +62,10 @@ class Login_test extends TestCase{
     
     //log out
     function test_logout(){
-            $this->assertFalse( isset($_SESSION['name']) );
+            $_SESSION['name'] = "palupisekarh@gmail.com";
+            $_SESSION['status'] = "login";
             $this->request('GET', 'login/logout');
-            $this->assertFalse( isset($_SESSION['name']) );
-    }   
+            $this->assertFalse(isset($_SESSION['name']));
+            $this->assertFalse(isset($_SESSION['status']));
+    }       
 }
